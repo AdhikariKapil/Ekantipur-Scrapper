@@ -1,0 +1,39 @@
+{
+  "entertainment_news": [
+    {
+      "title": "नानाका यी संवाद जो आज पनि चर्चित छन्",
+      "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2026/third-party/nana-in-krantiveer-08102026050553-1000x0.jpg&w=701&h=0",
+      "category": "मनोरञ्जन",
+      "author": "कान्तिपुर संवाददाता"
+    },
+    {
+      "title": "कीर्तिपुरमा गुञ्जँदै नेपथ्य",
+      "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2026/third-party/nepathya-02102026094646-1000x0.jpg&w=701&h=0",
+      "category": "मनोरञ्जन",
+      "author": "कान्तिपुर संवाददाता"
+    },
+    {
+      "title": "पत्नी हत्यामा अमेरिकन आइडलका पूर्व गायकलाई जन्मकैद",
+      "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2026/third-party/caleb-flynn-06102026054502-1000x0.jpg&w=701&h=0",
+      "category": "मनोरञ्जन",
+      "author": "एपी"
+    },
+    {
+      "title": "हरर् फिल्म फेस्टिभलमा २१ देशका २६ सिनेमा",
+      "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2026/third-party/horror-film-festival-06102026043731-1000x0.jpg&w=701&h=0",
+      "category": "मनोरञ्जन",
+      "author": "कान्तिपुर संवाददाता"
+    },
+    {
+      "title": "मानव बेचबिखनको यथार्थ पस्कँदै चलचित्र ‘जुनेली–२’",
+      "image_url": "https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2018/default/ekantipur-default-2025.png",
+      "category": "मनोरञ्जन",
+      "author": "नवीन पौडेल"
+    }
+  ],
+  "cartoon_of_the_day": {
+    "title": "अविनको कार्टुन",
+    "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2022/third-party/gajab-chha-ba-830419-0582026032443-1000x0.jpg&w=601&h=0",
+    "author": "अविन"
+  }
+}
