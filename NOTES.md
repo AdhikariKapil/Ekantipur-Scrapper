@@ -202,75 +202,77 @@ def scrape_entertainment(page) -> list[dict]:
 
 
 ### Prompt 3
->Write me one more function matching the style of the first, no main(), no file writing.
+Write me one more function matching the style of the first, no main(), no file writing.
 function signature: def scrape_cartoon(page) -> dict:
-It should navigate to https://ekantipur.com and return the Cartoon of the day as a single dict with keys: title, image_url, author.
+It should navigate to https://ekantipur.com/cartoon and return the Cartoon of the day as a single dict with keys: title, image_url, author.
 Here is the actual HTML of the cartoon section
-<section class="e-section">
-    <div class="container">
-        <div class="section-news">
-            <h4><a href="https://ekantipur.com/cartoon">कार्टुन</a></h4>
-            <div class="swiper cartoon-slider">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide c-slide">
-                        <figure>
-                            <a class="loading-img"
-                               href="https://assets-cdn-api.ekantipur.com/thumb.php?..."
-                               data-fancybox="gallery"
-                               data-thumb="..."
-                               data-type="image">
-                                <div class="skeleton"></div>
-                                <img class="lazy"
-                                     data-src="https://assets-cdn-api.ekantipur.com/thumb.php?src=...&w=601&h=0"
-                                     alt="अविनको कार्टुन">
-                            </a>
-                        </figure>
+
+<section class="cartoon-main-wrapper">
+    <div class="row g-5">
+        <div class="col-lg-4">
+            <div class="cartoon-wrapper">
+                <div class="cartoon-image">
+                    <figure>
+                        <a href="https://assets-cdn-api.ekantipur.com/thumb.php?src=...&w=601&h=0"
+                           data-fancybox="gallery"
+                           data-thumb="..."
+                           data-type="image">
+                            <div class="skeleton"></div>
+                            <img class="lazy"
+                                 data-src="https://assets-cdn-api.ekantipur.com/thumb.php?src=...&w=601&h=0"
+                                 alt="अविनको कार्टुन">
+                        </a>
+                    </figure>
+                </div>
+                <div class="cartoon-description">
+                    <p>गजब छ बा! - अविन</p>
+                    <div class="date">
+                        <p translate="no">भाद्र १५, २०८३</p>
                     </div>
-                    <!-- more .swiper-slide.c-slide slides follow, the first is today's -->
                 </div>
             </div>
         </div>
+        <!-- more .cartoon-wrapper items follow; the first is the most recent -->
     </div>
 </section>
 
 Requirements:
-1. Navigate to https://ekantipur.com with wait_until="documentloaded"
-2. Wait for section.e-section .swiper-slide.c-slide with state="attached".
-3. Take the first slide as today's cartoon.
+
+1. Navigate to https://ekantipur.com/cartoon
+2. Wait for .cartoon-main-wrapper .cartoon-wraper
+3. Take the first .cartoon-wrapper as today's cartoon.
 4. For that slide:
-* image_url - select img, prefer data-src, fallback to src. urljoin against https://ekantipur.com for protocol-relative URLs. If neither attribute is present, None.
-* title - the alt attribute of the image, stripped. There is no other title source.
-* author - parse the alt only when it literally matches ^(.+?को\s*कार्टुन$), returning the captured name. Otherwise None. Do not hardcore any name. Do not assume the cartoonist is always in the alt.
-5. If the slide or the image is missing, return
+
+- image_url - select img, prefer data-src, fallback to src. urljoin against https://ekantipur.com/ for protocol-relative URLs. If neither attribute is present, None.
+- title - read the caption text from .cartoon-description > p. Split on the first - (Space dash space). The part before the dash is the title.Strip whitespace. If the title part is empty, fallback to the alt attribute of the image. If both are empty, None
+- author - From the same captioin, take the part after the -, stripped. If it's non-empty, that's the author, If it is empty return None.
+
+1. If the slide or the image is missing, return
 {"title": None, "image_url": None, "author": None} rather than raising.
-6. Use query_selector, not locator, and use the same if el else None pattern as the entertainment function.
+2. Use query_selector, not locator, and use the same if el else None pattern as the entertainment function.
 
 **Copilot's Response**
 def scrape_cartoon(page) -> dict:
-    import re
     from urllib.parse import urljoin
 
-    base_url = "https://ekantipur.com"
+    base_url = "https://ekantipur.com/"
     empty_result = {
         "title": None,
         "image_url": None,
         "author": None,
     }
 
-    page.goto(base_url, wait_until="domcontentloaded")
-    page.wait_for_selector(
-        "section.e-section .swiper-slide.c-slide",
-        state="attached",
+    page.goto("https://ekantipur.com/cartoon")
+    page.wait_for_selector(".cartoon-main-wrapper .cartoon-wrapper")
+
+    cartoon = page.query_selector(
+        ".cartoon-main-wrapper .cartoon-wrapper"
     )
 
-    slide = page.query_selector(
-        "section.e-section .swiper-slide.c-slide"
-    )
-
-    if not slide:
+    if not cartoon:
         return empty_result
 
-    image = slide.query_selector("img")
+    image = cartoon.query_selector("img")
 
     if not image:
         return empty_result
@@ -284,21 +286,35 @@ def scrape_cartoon(page) -> dict:
         image_url = urljoin(base_url, image_url)
 
     alt_text = image.get_attribute("alt")
-    title = alt_text.strip() if alt_text and alt_text.strip() else None
+    alt_title = alt_text.strip() if alt_text and alt_text.strip() else None
 
+    caption = cartoon.query_selector(".cartoon-description > p")
+    caption_text = caption.text_content() if caption else None
+    caption_text = (
+        caption_text.strip()
+        if caption_text and caption_text.strip()
+        else None
+    )
+
+    title = None
     author = None
-    if title:
-        match = re.fullmatch(r"(.+?को\s*कार्टुन)", title)
-        if match:
-            author = match.group(1).strip()
-            author = re.sub(r"को\s*कार्टुन$", "", author).strip()
+
+    if caption_text:
+        if " - " in caption_text:
+            title_part, author_part = caption_text.split(" - ", 1)
+            title = title_part.strip() or alt_title
+            author = author_part.strip() or None
+        else:
+            title = caption_text
+
+    if not title:
+        title = alt_title
 
     return {
         "title": title,
         "image_url": image_url,
         "author": author,
     }
-
 ## 3. One thing it got wrong
 
 ### Copilot's code returned 3 articles instead of 5, with no error

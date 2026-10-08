@@ -1,6 +1,12 @@
 {
   "entertainment_news": [
     {
+      "title": "दमकमा ‘एक बोली एक दाम’ मञ्चन",
+      "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2026/third-party/8388939831603685821553787694240827268829384n-08102026094433-1000x0.jpg&w=701&h=0",
+      "category": "मनोरञ्जन",
+      "author": "पर्वत पोर्तेल"
+    },
+    {
       "title": "नानाका यी संवाद जो आज पनि चर्चित छन्",
       "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2026/third-party/nana-in-krantiveer-08102026050553-1000x0.jpg&w=701&h=0",
       "category": "मनोरञ्जन",
@@ -23,17 +29,11 @@
       "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2026/third-party/horror-film-festival-06102026043731-1000x0.jpg&w=701&h=0",
       "category": "मनोरञ्जन",
       "author": "कान्तिपुर संवाददाता"
-    },
-    {
-      "title": "मानव बेचबिखनको यथार्थ पस्कँदै चलचित्र ‘जुनेली–२’",
-      "image_url": "https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2018/default/ekantipur-default-2025.png",
-      "category": "मनोरञ्जन",
-      "author": "नवीन पौडेल"
     }
   ],
   "cartoon_of_the_day": {
-    "title": "अविनको कार्टुन",
-    "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2022/third-party/gajab-chha-ba-830419-0582026032443-1000x0.jpg&w=601&h=0",
-    "author": "अविन"
+    "title": "गजब छ बा! -",
+    "image_url": "https://assets-cdn-api.ekantipur.com/thumb.php?src=https://assets-cdn.ekantipur.com/uploads/source/news/kantipur/2022/third-party/editorial-cartoon-20830518-0492026061237-1000x0.jpg&w=601&h=0",
+    "author": null
   }
 }

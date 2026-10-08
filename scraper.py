@@ -1,5 +1,4 @@
 import json
-import re
 from urllib.parse import urljoin
 
 from playwright.sync_api import Page, sync_playwright
@@ -38,7 +37,7 @@ def scrape_entertainment(page: Page) -> list[dict]:
                 if not image_url:
                     image_url = image_element.get_attribute("src")
 
-                    image_url = urljoin(BASE_URL, image_url)
+                image_url = urljoin(BASE_URL, image_url)
 
             author_element = card.query_selector(".author-name p a")
             author_text = author_element.text_content() if author_element else None
@@ -60,29 +59,25 @@ def scrape_entertainment(page: Page) -> list[dict]:
     return articles
 
 
-def scrape_cartoon(page: Page) -> dict:
-    import re
+def scrape_cartoon(page) -> dict:
     from urllib.parse import urljoin
 
-    base_url = "https://ekantipur.com"
+    base_url = "https://ekantipur.com/"
     empty_result = {
         "title": None,
         "image_url": None,
         "author": None,
     }
 
-    page.goto(base_url, wait_until="domcontentloaded")
-    page.wait_for_selector(
-        "section.e-section .swiper-slide.c-slide",
-        state="attached",
-    )
+    page.goto("https://ekantipur.com/cartoon")
+    page.wait_for_selector(".cartoon-main-wrapper .cartoon-wrapper")
 
-    slide = page.query_selector("section.e-section .swiper-slide.c-slide")
+    cartoon = page.query_selector(".cartoon-main-wrapper .cartoon-wrapper")
 
-    if not slide:
+    if not cartoon:
         return empty_result
 
-    image = slide.query_selector("img")
+    image = cartoon.query_selector("img")
 
     if not image:
         return empty_result
@@ -92,17 +87,31 @@ def scrape_cartoon(page: Page) -> dict:
     if not image_url:
         image_url = image.get_attribute("src")
 
-    image_url = urljoin(base_url, image_url)
+    if image_url and image_url.startswith("//"):
+        image_url = urljoin(base_url, image_url)
 
     alt_text = image.get_attribute("alt")
-    title = alt_text.strip() if alt_text and alt_text.strip() else None
+    alt_title = alt_text.strip() if alt_text and alt_text.strip() else None
 
+    caption = cartoon.query_selector(".cartoon-description > p")
+    caption_text = caption.text_content() if caption else None
+    caption_text = (
+        caption_text.strip() if caption_text and caption_text.strip() else None
+    )
+
+    title = None
     author = None
-    if title:
-        match = re.fullmatch(r"(.+?को\s*कार्टुन)", title)
-        if match:
-            author = match.group(1).strip()
-            author = re.sub(r"को\s*कार्टुन$", "", author).strip()
+
+    if caption_text:
+        if " - " in caption_text:
+            title_part, author_part = caption_text.split(" - ", 1)
+            title = title_part.strip() or alt_title
+            author = author_part.strip() or None
+        else:
+            title = caption_text
+
+    if not title:
+        title = alt_title
 
     return {
         "title": title,
@@ -113,7 +122,7 @@ def scrape_cartoon(page: Page) -> dict:
 
 def main():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         entertainment_news = scrape_entertainment(page)
