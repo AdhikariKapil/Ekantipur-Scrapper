@@ -62,7 +62,6 @@ def scrape_entertainment(page: Page) -> list[dict]:
 def scrape_cartoon(page) -> dict:
     from urllib.parse import urljoin
 
-    base_url = "https://ekantipur.com/"
     empty_result = {
         "title": None,
         "image_url": None,
@@ -88,7 +87,7 @@ def scrape_cartoon(page) -> dict:
         image_url = image.get_attribute("src")
 
     if image_url and image_url.startswith("//"):
-        image_url = urljoin(base_url, image_url)
+        image_url = urljoin(BASE_URL, image_url)
 
     alt_text = image.get_attribute("alt")
     alt_title = alt_text.strip() if alt_text and alt_text.strip() else None
